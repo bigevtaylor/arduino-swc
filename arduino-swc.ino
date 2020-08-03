@@ -118,6 +118,7 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
       digitalWrite(csPin, HIGH); */
       Serial.println(" VOL DOWN"); // for debug
       wrAction(50, 150);
+     digitalWrite(csPin, HIGH);
   }
 
 // Volume Up
