@@ -82,7 +82,7 @@ buttonConfig.checkButtons();
   
 }
 
-void wrAction(int digiValue, int delayMs) {
+void wrAction(byte digiValue, byte delayMs) {
       digitalWrite(csPin, LOW);
       SPI.transfer(address);
       SPI.transfer(digiValue);
