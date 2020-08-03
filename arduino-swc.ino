@@ -104,7 +104,7 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
       delay(150); // Hold wiper resistance value for this time
       SPI.transfer(noButton); // Depress button to similate analogue
       Serial.println(" No Button"); // for debug
-     digitalWrite(csPin, HIGH); */
+     digitalWrite(csPin, HIGH);
   }
 
 // Volume Up
