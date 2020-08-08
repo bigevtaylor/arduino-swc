@@ -1,5 +1,8 @@
 /* Ford BA / BF Steering Wheel Control Adapter for Pioneer Stereo
- * Version 0.1 08/11/2020
+ * Version 0.1 08/08/2020
+ * Complete test in vehicle, all but previous track and power off functioning
+ * Version 0.2 08/08/2020
+ * Altered to catch release instead of press and supresss click to catch double-click
  */
  
 #include <AceButton.h>
@@ -62,7 +65,7 @@ void setup() {
   // level events and supress events
 //  ButtonConfig* buttonConfig = button.getButtonConfig();
   buttonConfig.setEventHandler(handleEvent);
-  buttonConfig.setFeature(ButtonConfig::kFeatureClick);
+//  buttonConfig.setFeature(ButtonConfig::kFeatureClick);
   buttonConfig.setFeature(ButtonConfig::kFeatureDoubleClick);
   buttonConfig.setFeature(ButtonConfig::kFeatureLongPress);
   buttonConfig.setFeature(ButtonConfig::kFeatureSuppressAfterClick);
@@ -112,14 +115,14 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
   Serial.println(swPress);
 
 // Volume Down
-  if ((swButton == 0) && (swPress == 0)) {
+  if ((swButton == 0) && (swPress == 1)) {
       Serial.println(" VOL DOWN"); // for debug
       wrAction(50, 150); // 23kOhm
       digitalWrite(csPin, HIGH);
   }
 
 // Volume Up
-  if ((swButton == 1) && (swPress == 0)) {
+  if ((swButton == 1) && (swPress == 1)) {
       Serial.println(" VOL UP");
       wrAction(35, 150); // 24kOhm
       digitalWrite(csPin, HIGH);
@@ -141,7 +144,7 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
   }
 
 //  Source
-  if ((swButton == 3) && (swPress == 0)) {
+  if ((swButton == 3) && (swPress == 1)) {
       Serial.println(" Source");
       wrAction(2, 150); // 1.2kOhm
       digitalWrite(csPin, HIGH);
