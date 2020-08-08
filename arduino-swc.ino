@@ -17,6 +17,8 @@ int csPin =  10;
 
 // Set the address for the digipot
 int address = 0x00;
+
+// Set the digitpot resistor value for no button
 int noButton = 255;
 
 // Create 4 AceButton objects, with their virtual pin number 0 to 3.
@@ -70,7 +72,7 @@ void setup() {
   buttonConfig.setFeature(ButtonConfig::kFeatureLongPress);
   buttonConfig.setFeature(ButtonConfig::kFeatureSuppressAfterClick);
   buttonConfig.setFeature(ButtonConfig::kFeatureSuppressClickBeforeDoubleClick);
-  buttonConfig.setFeature(ButtonConfig::kFeatureSuppressAfterLongPress);
+//  buttonConfig.setFeature(ButtonConfig::kFeatureSuppressAfterLongPress);
 
   // Ready digitpot, set wiper to no button
   pinMode(csPin, OUTPUT);
