@@ -1,3 +1,7 @@
+/* Ford BA / BF Steering Wheel Control Adapter for Pioneer Stereo
+ * Version 0.1 08/11/2020
+ */
+ 
 #include <AceButton.h>
 #include <SPI.h>
 using namespace ace_button;
@@ -6,11 +10,11 @@ using namespace ace_button;
 static const uint8_t BUTTON_PIN = A6;
 
 // Set the digipot wiper
-int csPin =  4;
+int csPin =  10;
 
 // Set the address for the digipot
-byte address = 0x00;
-byte noButton = 255;
+int address = 0x00;
+int noButton = 255;
 
 // Create 4 AceButton objects, with their virtual pin number 0 to 3.
 // Each virtual PIN relates to a resistance value on the ladder
@@ -70,7 +74,7 @@ void setup() {
   SPI.begin();
   digitalWrite(csPin, LOW);
   SPI.transfer(address); // command
-  SPI.transfer(noButton); // value
+  SPI.transfer(255); // value
   digitalWrite(csPin, HIGH);
   Serial.println(" Ready");
 }
@@ -82,12 +86,13 @@ buttonConfig.checkButtons();
   
 }
 
-void wrAction(byte digiValue, byte delayMs) {
+void wrAction(int digiValue, int delayMs) {
       digitalWrite(csPin, LOW);
       SPI.transfer(address);
       SPI.transfer(digiValue);
       Serial.println(" Button Press"); // for debug
       delay(delayMs);
+      SPI.transfer(address);
       SPI.transfer(noButton);
       Serial.println(" Button Release"); // for debug
       digitalWrite(csPin, HIGH);
@@ -102,75 +107,52 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
   // Print out a message for all analogue events for debug
   Serial.print(F("handleEvent(): "));
   Serial.print(F("virtualPin: "));
-  Serial.print(button->getPin());
+  Serial.print(swButton);
   Serial.print(F("; eventType: "));
-  Serial.print(eventType);
+  Serial.println(swPress);
 
 // Volume Down
-  if ((swButton = 0) && (swPress = AceButton::kEventClicked)) {
-      /* digitalWrite(csPin, LOW);
-      SPI.transfer(address);
-      SPI.transfer(50); // 23kOhm
+  if ((swButton == 0) && (swPress == 0)) {
       Serial.println(" VOL DOWN"); // for debug
-      delay(150); // Hold wiper resistance value for this time
-      SPI.transfer(noButton); // Depress button to similate analogue
-      Serial.println(" No Button"); // for debug
-      digitalWrite(csPin, HIGH); */
-      Serial.println(" VOL DOWN"); // for debug
-      wrAction(50, 150);
-     digitalWrite(csPin, HIGH);
+      wrAction(50, 150); // 23kOhm
+      digitalWrite(csPin, HIGH);
   }
 
 // Volume Up
-  if ((swButton = 1) && (swPress = AceButton::kEventClicked)) {
-      digitalWrite(csPin, LOW);
-      SPI.transfer(address);
-      SPI.transfer(35); // 16kOhm
+  if ((swButton == 1) && (swPress == 0)) {
       Serial.println(" VOL UP");
-      delay(150);
-      SPI.transfer(noButton);
-      Serial.println(" No Button");
+      wrAction(35, 150); // 24kOhm
       digitalWrite(csPin, HIGH);
   }
 
 // Next Track
-  if ((swButton = 2) && (swPress = AceButton::kEventClicked)) {
-      digitalWrite(csPin, LOW);
-      SPI.transfer(address);
-      SPI.transfer(19); // 8kOhm
-      delay(150);
-      SPI.transfer(noButton);
+  if ((swButton == 2) && (swPress == 1)) {
+      Serial.println(" Next Track");
+      wrAction(19, 150); // 82kOhm
       digitalWrite(csPin, HIGH);
   }
 
 // Previous Track
-  if ((swButton = 2) && (swPress = AceButton::kEventDoubleClicked)) {
-      digitalWrite(csPin, LOW);
-      SPI.transfer(address);
-      SPI.transfer(25); // 11kOhm
-      delay(150);
-      SPI.transfer(noButton);
+  if ((swButton == 2) && (swPress == 3)) {
+      Serial.println(" Previous Track");
+      wrAction(25, 150); // 11kOhm
       digitalWrite(csPin, HIGH);
+
   }
 
 //  Source
-  if ((swButton = 3) && (swPress = AceButton::kEventClicked)) {
-      digitalWrite(csPin, LOW);
-      SPI.transfer(address);
-      SPI.transfer(2); // 1.2kOhm
-      delay(150);
-      SPI.transfer(noButton);
+  if ((swButton == 3) && (swPress == 0)) {
+      Serial.println(" Source");
+      wrAction(2, 150); // 1.2kOhm
       digitalWrite(csPin, HIGH);
-  }
+
+  } 
 
 //  Power
-  if ((swButton = 3) && (swPress = AceButton::kEventLongPressed)) {
-      digitalWrite(csPin, LOW);
-      SPI.transfer(address);
-      SPI.transfer(2); // 1.2kOhm, hold ~2secs
-      delay(1500);
-      SPI.transfer(noButton);
+  /*  Serial.println(" Power");
+      wrAction(2, 1500); // 1.2kOhm held for 2 secs
       digitalWrite(csPin, HIGH);
-  }
+
+  } */
 
 }
