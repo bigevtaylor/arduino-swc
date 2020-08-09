@@ -8,6 +8,12 @@ Requires AceButton https://github.com/bxparks/AceButton
  *  This code currently only supports the functions that the wired remote tip
  *  triggers. Later versions will cover the ring either with a diode configuration
  *  or a dual digitpot.
+ *
+ *  The bulk of this has been built off the knowledge found in the following articles
+ *  and forum posts;
+ *
+ * http://www.jvde.net/node/7
+ * https://forum.arduino.cc/index.php?topic=230068.0
  *  
  *  This should work on Pioneer head units (Single DIN) that deliver both 5V & 3.3V
  *  with the Wired Remote input.
