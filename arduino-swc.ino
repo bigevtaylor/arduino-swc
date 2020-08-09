@@ -1,10 +1,25 @@
 /* Ford BA / BF Steering Wheel Control Adapter for Pioneer Stereo
- * Version 0.1 08/08/2020
- * Complete test in vehicle, all but previous track and power off functioning
- * Version 0.2 08/08/2020
- * Altered to catch release instead of press and supresss click to catch double-click
- * Version 0.3 09/08/2020
- * Cleaned up volume trigger, reset track -/+ trigger
+ *  
+ *  This code currently only supports the functions that the wired remote tip
+ *  triggers. Later versions will cover the ring either with a diode configuration
+ *  or a dual digitpot.
+ *  
+ *  This should work on Pioneer head units (Single DIN) that deliver both 5V & 3.3V
+ *  with the Wired Remote input.
+ *  
+ *  *** NOTE : The 3.3V circuit on an Arduino is ONLY available when the unit is powered
+ *  via USB. If it is powered via VIN then a 5V power line to the digipot will work on a
+ *  Pioneer that delivers 3.3V via the WR.
+ *  
+ *  I recommend leaving the USB free for debug / programming whilst installed in vehicle
+ *  and power the unit via another source.
+ *  
+ *  Version 0.1 08/08/2020
+ *  Complete test in vehicle, all but previous track and power off functioning
+ *  Version 0.2 08/08/2020
+ *  Altered to catch release instead of press and supresss click to catch double-click
+ *  Version 0.3 09/08/2020
+ *  Cleaned up volume trigger, reset track -/+ trigger
  */
  
 #include <AceButton.h>
@@ -29,7 +44,7 @@ static const uint8_t NUM_BUTTONS = 4;
 static AceButton b0((uint8_t) 0);
 static AceButton b1(1);
 static AceButton b2(2);
-static AceButton b3(3);
+static AceButton b3(3); 
 static AceButton* const BUTTONS[NUM_BUTTONS] = {
     &b0, &b1, &b2, &b3,
 };
@@ -97,11 +112,11 @@ void wrAction(int digiValue, int delayMs) {
       digitalWrite(csPin, LOW);
       SPI.transfer(address);
       SPI.transfer(digiValue);
-      Serial.println(" Button Press"); // for debug
+//      Serial.println(" Button Press"); // for debug
       delay(delayMs);
       SPI.transfer(address);
       SPI.transfer(noButton);
-      Serial.println(" Button Release"); // for debug
+//      Serial.println(" Button Release"); // for debug
       digitalWrite(csPin, HIGH);
 }
 
@@ -111,53 +126,59 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
   uint8_t swButton = button->getPin();
   uint8_t swPress = (eventType);
 
-  // Print out a message for all analogue events for debug
+  /* // Print out a message for all analogue events for debug
   Serial.print(F("handleEvent(): "));
   Serial.print(F("virtualPin: "));
   Serial.print(swButton);
   Serial.print(F("; eventType: "));
-  Serial.println(swPress);
+  Serial.println(swPress); */
 
 // Volume Down
+// A pressed event is the most response for volume control
   if ((swButton == 0) && (swPress == 0)) {
-      Serial.println(" VOL DOWN"); // for debug
-      wrAction(50, 150); // 23kOhm
+//      Serial.println(" VOL DOWN"); // for debug
+      wrAction(50, 150); // 24kOhm
       digitalWrite(csPin, HIGH);
   }
 
 // Volume Up
+// A pressed event is the most responsive for volume control
   if ((swButton == 1) && (swPress == 0)) {
-      Serial.println(" VOL UP");
-      wrAction(35, 150); // 24kOhm
+//      Serial.println(" VOL UP");
+      wrAction(35, 150); // 16kOhm
       digitalWrite(csPin, HIGH);
   }
 
+// Relase is suppressed and clicked is delayed, these events catch click and 
+// double-click with a reasonale delay for the track & seek -/+ functions
+// and source / power. A slight delay in these functions is acceptable UX.
+// At least, I think so anyway :)
+
 // Next Track
   if ((swButton == 2) && (swPress == 2)) {
-      Serial.println(" Next Track");
-      wrAction(17, 150); // 82kOhm
+//      Serial.println(" Next Track");
+      wrAction(17, 150); // 8kOhm
       digitalWrite(csPin, HIGH);
   }
 
 // Previous Track
   if ((swButton == 2) && (swPress == 3)) {
-      Serial.println(" Previous Track");
-      wrAction(25, 150); // 11kOhm
+//      Serial.println(" Previous Track");
+      wrAction(25, 150); // 11,25kOhm
       digitalWrite(csPin, HIGH);
 
   }
 
 //  Source
   if ((swButton == 3) && (swPress == 2)) {
-      Serial.println(" Source");
+//      Serial.println(" Source");
       wrAction(2, 150); // 1.2kOhm
       digitalWrite(csPin, HIGH);
-
   } 
 
 //  Power
   if ((swButton == 3) && (swPress == 4)) {
-      Serial.println(" Power");
+//      Serial.println(" Power");
       wrAction(2, 1500); // 1.2kOhm held for 2 secs
       digitalWrite(csPin, HIGH);
     }
