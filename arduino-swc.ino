@@ -87,9 +87,9 @@ void setup() {
   buttonConfig.setFeature(ButtonConfig::kFeatureClick);
   buttonConfig.setFeature(ButtonConfig::kFeatureDoubleClick);
   buttonConfig.setFeature(ButtonConfig::kFeatureLongPress);
-//  buttonConfig.setFeature(ButtonConfig::kFeatureSuppressAfterClick);
+  buttonConfig.setFeature(ButtonConfig::kFeatureSuppressAfterClick);
   buttonConfig.setFeature(ButtonConfig::kFeatureSuppressClickBeforeDoubleClick);
-//  buttonConfig.setFeature(ButtonConfig::kFeatureSuppressAfterLongPress);
+  buttonConfig.setFeature(ButtonConfig::kFeatureSuppressAfterLongPress);
 
   // Ready digitpot, set wiper to no button
   pinMode(csPin, OUTPUT);
@@ -126,12 +126,14 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
   uint8_t swButton = button->getPin();
   uint8_t swPress = (eventType);
 
-  /* // Print out a message for all analogue events for debug
+  /*
+  // Print out a message for all analogue events for debug
   Serial.print(F("handleEvent(): "));
   Serial.print(F("virtualPin: "));
   Serial.print(swButton);
   Serial.print(F("; eventType: "));
-  Serial.println(swPress); */
+  Serial.println(swPress);
+  */
 
 // Volume Down
 // A pressed event is the most response for volume control
@@ -149,10 +151,12 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
       digitalWrite(csPin, HIGH);
   }
 
-// Relase is suppressed and clicked is delayed, these events catch click and 
-// double-click with a reasonale delay for the track & seek -/+ functions
-// and source / power. A slight delay in these functions is acceptable UX.
-// At least, I think so anyway :)
+/*
+* Relase is suppressed and clicked is delayed, these events catch click and 
+* double-click with a reasonale delay for the track & seek -/+ functions
+* and source / power. A slight delay in these functions is acceptable UX.
+* At least, I think so anyway :)
+*/
 
 // Next Track
   if ((swButton == 2) && (swPress == 2)) {
@@ -179,7 +183,7 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
 //  Power
   if ((swButton == 3) && (swPress == 4)) {
 //      Serial.println(" Power");
-      wrAction(2, 1500); // 1.2kOhm held for 2 secs
+      wrAction(2, 1500); // 1.2kOhm hold
       digitalWrite(csPin, HIGH);
     }
 }
