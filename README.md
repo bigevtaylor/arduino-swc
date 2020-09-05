@@ -1,33 +1,31 @@
 arduino-swc
-Car Audio Steering Wheel Control interface using Arduino.
+Car Audio Steering Wheel Control interface using Arduino.  
 
-Requires AceButton https://github.com/bxparks/AceButton
+Requires AceButton https://github.com/bxparks/AceButton  
 
-Ford BA / BF Steering Wheel Control Adapter for Pioneer Stereo
+**Ford BA / BF Steering Wheel Control Adapter for Pioneer Stereo**  
   
-This code currently only supports the functions that the wired remote tip
-triggers. Later versions will cover the ring either with a diode configuration
-or a dual digitpot.
+This code currently only supports the functions that the wired remote tip triggers. Later versions will cover the ring either with a diode configuration  
+or a dual digitpot.  
 
-The bulk of this has been built off the knowledge found in the following articles
-and forum posts;
+The bulk of this has been built off the knowledge found in the following articles and forum posts;  
 
-http://www.jvde.net/node/7
-https://forum.arduino.cc/index.php?topic=230068.0
+http://www.jvde.net/node/7  
+https://forum.arduino.cc/index.php?topic=230068.0  
   
-This should work on Pioneer head units (Single DIN) that deliver both 5V & 3.3V
-with the Wired Remote input.
+This should work on Pioneer head units (Single DIN) that deliver both 5V & 3.3V via the Wired Remote input.  
   
-*** NOTE : The 3.3V circuit on an Arduino is ONLY available when the unit is powered
-via USB. If it is powered via VIN then a 5V power line to the digipot will work on a
-Pioneer that delivers 3.3V via the WR.
+*NOTE : The 3.3V circuit on an Arduino is ONLY available when the unit is powered via USB. If it is powered via VIN then a 5V power line to the digipot will work on a Pioneer that delivers 3.3V via the WR.*
   
-I recommend leaving the USB free for debug / programming whilst installed in vehicle
-and power the unit via another source.
+I recommend leaving the USB free for debug / programming whilst installed in vehicle and power the unit via another source.  
 
-Current button configuration:
+Current button configuration:  
 
-Volume Down = VOL-, Press
+Function | Button | Action
+-------- | ------ | -------
+Volume Down | VOL- | Press
+
+
 Volume Up = VOL+, Press
 Next Track / Program = Seek, Press
 Previous Track / Program = Seek, Double-press
