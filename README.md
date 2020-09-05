@@ -27,17 +27,23 @@ and power the unit via another source.
 
 Current button configuration:
   
-VOL- = VOL- Press
-VOL+ = VOL+ Press
-Track+ = Seek Press
-Track- = Seek Double-press
-Source = Source Press
-Power = Source Long-press
+VOL- = VOL-, Press
+VOL+ = VOL+, Press
+Track+ = Seek, Press
+Track- = Seek, Double-press
+Source = Source, Press
+Voice Control = Source, Long-press
+Hang-up = Source, Double-press
 
 
 Version 0.1 08/08/2020
 Complete test in vehicle, all but previous track and power off functioning
+
 Version 0.2 08/08/2020
 Altered to catch release instead of press and supresss click to catch double-click
+
 Version 0.3 09/08/2020
 Cleaned up volume trigger, reset track -/+ trigger
+
+Version 0.4 29/8/2020
+Introduced dual digipot commands for tip & ring triggers, this enables BT phone commands
