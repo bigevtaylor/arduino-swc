@@ -1,4 +1,3 @@
-arduino-swc
 Car Audio Steering Wheel Control interface using Arduino.  
 
 Requires AceButton https://github.com/bxparks/AceButton  
@@ -24,24 +23,22 @@ Current button configuration:
 Function | Button | Action
 -------- | ------ | -------
 Volume Down | VOL- | Press
+Volume Up | VOL+ | Press
+Next Track / Program | Seek | Press
+Previous Track / Program | Seek | Double-press
+Source | Source | Press
+Voice Control | Source | Long-press
+Hang-up | Source | Double-press
 
+*Version 0.1 08/08/2020*  
+Complete test in vehicle, all but previous track and power off functioning  
 
-Volume Up = VOL+, Press
-Next Track / Program = Seek, Press
-Previous Track / Program = Seek, Double-press
-Source = Source, Press
-Voice Control = Source, Long-press
-Hang-up = Source, Double-press
+*Version 0.2 08/08/2020*  
+Altered to catch release instead of press and supresss click to catch double-click  
 
-Version 0.1 08/08/2020
-Complete test in vehicle, all but previous track and power off functioning
+*Version 0.3 09/08/2020*  
+Cleaned up volume trigger, reset track -/+ trigger  
 
-Version 0.2 08/08/2020
-Altered to catch release instead of press and supresss click to catch double-click
-
-Version 0.3 09/08/2020
-Cleaned up volume trigger, reset track -/+ trigger
-
-Version 0.4 29/08/2020
-Introduced dual digipot commands for tip & ring triggers, this enables BT phone commands 
+*Version 0.4 29/08/2020*  
+Introduced dual digipot commands for tip & ring triggers, this enables BT phone commands  
   
