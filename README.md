@@ -26,15 +26,14 @@ I recommend leaving the USB free for debug / programming whilst installed in veh
 and power the unit via another source.
 
 Current button configuration:
-  
-VOL- = VOL-, Press
-VOL+ = VOL+, Press
-Track+ = Seek, Press
-Track- = Seek, Double-press
+
+Volume Down = VOL-, Press
+Volume Up = VOL+, Press
+Next Track / Program = Seek, Press
+Previous Track / Program = Seek, Double-press
 Source = Source, Press
 Voice Control = Source, Long-press
 Hang-up = Source, Double-press
-
 
 Version 0.1 08/08/2020
 Complete test in vehicle, all but previous track and power off functioning
@@ -45,5 +44,6 @@ Altered to catch release instead of press and supresss click to catch double-cli
 Version 0.3 09/08/2020
 Cleaned up volume trigger, reset track -/+ trigger
 
-Version 0.4 29/8/2020
-Introduced dual digipot commands for tip & ring triggers, this enables BT phone commands
+Version 0.4 29/08/2020
+Introduced dual digipot commands for tip & ring triggers, this enables BT phone commands 
+  
