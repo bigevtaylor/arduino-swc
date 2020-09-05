@@ -1,25 +1,30 @@
 /* Ford BA / BF Steering Wheel Control Adapter for Pioneer Stereo
- *  
- *  This code currently only supports the functions that the wired remote tip
- *  triggers. Later versions will cover the ring either with a diode configuration
- *  or a dual digitpot.
- *  
- *  This should work on Pioneer head units (Single DIN) that deliver both 5V & 3.3V
- *  with the Wired Remote input.
- *  
- *  *** NOTE : The 3.3V circuit on an Arduino is ONLY available when the unit is powered
- *  via USB. If it is powered via VIN then a 5V power line to the digipot will work on a
- *  Pioneer that delivers 3.3V via the WR.
- *  
- *  I recommend leaving the USB free for debug / programming whilst installed in vehicle
- *  and power the unit via another source.
- *  
- *  Version 0.1 08/08/2020
- *  Complete test in vehicle, all but previous track and power off functioning
- *  Version 0.2 08/08/2020
- *  Altered to catch release instead of press and supresss click to catch double-click
- *  Version 0.3 09/08/2020
- *  Cleaned up volume trigger, reset track -/+ trigger
+  
+This code currently only supports the functions that the wired remote tip
+triggers. Later versions will cover the ring either with a diode configuration
+or a dual digitpot.
+   
+This should work on Pioneer head units (Single DIN) that deliver both 5V & 3.3V
+with the Wired Remote input.
+ 
+*** NOTE : The 3.3V circuit on an Arduino is ONLY available when the unit is powered
+via USB. If it is powered via VIN then a 5V power line to the digipot will work on a
+Pioneer that delivers 3.3V via the WR.
+ 
+I recommend leaving the USB free for debug / programming whilst installed in vehicle
+and power the unit via another source.
+ 
+Version 0.1 08/08/2020
+Complete test in vehicle, all but previous track and power off functioning
+
+Version 0.2 08/08/2020
+Altered to catch release instead of press and supresss click to catch double-click
+
+Version 0.3 09/08/2020
+Cleaned up volume trigger, reset track -/+ trigger
+
+Version 0.4 29/8/2020
+Introduced dual digipot commands for tip & ring triggers, this enables BT phone commands
  */
  
 #include <AceButton.h>
@@ -32,11 +37,13 @@ static const uint8_t BUTTON_PIN = A6;
 // Set the digipot wiper
 int csPin =  10;
 
-// Set the address for the digipot
-int address = 0x00;
+// Set the wiper addresses for the digipot
+int wiperTip = B00000000;
+int wiperRing = B00010000;
+
 
 // Set the digitpot resistor value for no button
-int noButton = 255;
+int ground = 0;
 
 // Create 4 AceButton objects, with their virtual pin number 0 to 3.
 // Each virtual PIN relates to a resistance value on the ladder
@@ -74,29 +81,29 @@ void setup() {
   Serial.begin(115200);
   while (! Serial); // Wait until Serial is ready - Leonardo/Micro
   Serial.println(F("setup(): begin"));
-
-  // Define output PIN here
   
   // Don't use internal pull-up resistor
   pinMode(BUTTON_PIN, INPUT);
 
-  // Configure the ButtonConfig with the event handler, enable all higher
-  // level events and supress events
+// Configure the ButtonConfig with the event handler, enable all higher
+// level events and supress events
 //  ButtonConfig* buttonConfig = button.getButtonConfig();
   buttonConfig.setEventHandler(handleEvent);
-  buttonConfig.setFeature(ButtonConfig::kFeatureClick);
+//  buttonConfig.setFeature(ButtonConfig::kFeatureClick);
   buttonConfig.setFeature(ButtonConfig::kFeatureDoubleClick);
   buttonConfig.setFeature(ButtonConfig::kFeatureLongPress);
   buttonConfig.setFeature(ButtonConfig::kFeatureSuppressAfterClick);
   buttonConfig.setFeature(ButtonConfig::kFeatureSuppressClickBeforeDoubleClick);
-  buttonConfig.setFeature(ButtonConfig::kFeatureSuppressAfterLongPress);
+//  buttonConfig.setFeature(ButtonConfig::kFeatureSuppressAfterLongPress);
 
-  // Ready digitpot, set wiper to no button
+//  Ready digitpot, set wiper to no button
   pinMode(csPin, OUTPUT);
   SPI.begin();
   digitalWrite(csPin, LOW);
-  SPI.transfer(address); // command
-  SPI.transfer(255); // value
+  SPI.transfer(wiperTip); // command
+  SPI.transfer(ground); // value
+  SPI.transfer(wiperRing); // command
+  SPI.transfer(255); // float the ring circuit
   digitalWrite(csPin, HIGH);
   Serial.println(" Ready");
 }
@@ -108,14 +115,36 @@ buttonConfig.checkButtons();
   
 }
 
-void wrAction(int digiValue, int delayMs) {
+// In the function for the tip commands we only change resistance for the 
+// wiper where the tip is connected. The ring floats and is ignored by the 
+// head unit
+void wrTip(int digiValue, int delayMs) {
       digitalWrite(csPin, LOW);
-      SPI.transfer(address);
+      SPI.transfer(wiperTip);
       SPI.transfer(digiValue);
 //      Serial.println(" Button Press"); // for debug
       delay(delayMs);
-      SPI.transfer(address);
-      SPI.transfer(noButton);
+      SPI.transfer(wiperTip);
+      SPI.transfer(ground);
+//      Serial.println(" Button Release"); // for debug
+      digitalWrite(csPin, HIGH);
+}
+
+// For ring functions the wiper for the tip is where resistance is applied
+// in combination with taking the ring to ground
+void wrRing(int digiValue, int delayMs) {
+      digitalWrite(csPin, LOW);
+      SPI.transfer(wiperRing);
+      SPI.transfer(ground);
+//      Serial.println(" Select Ring, ground"); // for debug
+      SPI.transfer(wiperTip);
+      SPI.transfer(digiValue);
+//      Serial.println(" Select Tip, button"); // for debug
+      delay(delayMs);
+      SPI.transfer(wiperTip);
+      SPI.transfer(ground);
+      SPI.transfer(wiperRing);
+      SPI.transfer(255); // float
 //      Serial.println(" Button Release"); // for debug
       digitalWrite(csPin, HIGH);
 }
@@ -139,51 +168,51 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
 // A pressed event is the most response for volume control
   if ((swButton == 0) && (swPress == 0)) {
 //      Serial.println(" VOL DOWN"); // for debug
-      wrAction(50, 150); // 24kOhm
-      digitalWrite(csPin, HIGH);
+      wrTip(55, 150); // 24kOhm
   }
 
 // Volume Up
 // A pressed event is the most responsive for volume control
   if ((swButton == 1) && (swPress == 0)) {
 //      Serial.println(" VOL UP");
-      wrAction(35, 150); // 16kOhm
-      digitalWrite(csPin, HIGH);
+      wrTip(37, 150); // 16kOhm
   }
 
 /*
 * Relase is suppressed and clicked is delayed, these events catch click and 
 * double-click with a reasonale delay for the track & seek -/+ functions
-* and source / power. A slight delay in these functions is acceptable UX.
+* and source button functions. A slight delay in these functions is acceptable UX.
 * At least, I think so anyway :)
 */
 
 // Next Track
   if ((swButton == 2) && (swPress == 2)) {
 //      Serial.println(" Next Track");
-      wrAction(17, 150); // 8kOhm
-      digitalWrite(csPin, HIGH);
+      wrTip(19, 150); // 8kOhm
   }
 
 // Previous Track
   if ((swButton == 2) && (swPress == 3)) {
 //      Serial.println(" Previous Track");
-      wrAction(25, 150); // 11,25kOhm
-      digitalWrite(csPin, HIGH);
-
+      wrTip(28, 150); // 11,25kOhm
   }
 
 //  Source
   if ((swButton == 3) && (swPress == 2)) {
 //      Serial.println(" Source");
-      wrAction(2, 150); // 1.2kOhm
-      digitalWrite(csPin, HIGH);
+      wrTip(2, 150); // 1.2kOhm
   } 
 
-//  Power
+//  Voice Control
   if ((swButton == 3) && (swPress == 4)) {
-//      Serial.println(" Power");
-      wrAction(2, 1500); // 1.2kOhm hold
-      digitalWrite(csPin, HIGH);
+//      Serial.println(" Voice Control");
+      wrRing(232, 1500); // 38-88kOhm hold
     }
+
+//  Hang-up
+  if ((swButton == 3) && (swPress == 3)) {
+//      Serial.println(" Hang-up");
+      wrRing(14, 150); // 5kOhm
+    }
+
 }
