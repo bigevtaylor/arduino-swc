@@ -25,6 +25,9 @@ Cleaned up volume trigger, reset track -/+ trigger
 
 Version 0.4 29/8/2020
 Introduced dual digipot commands for tip & ring triggers, this enables BT phone commands
+
+Version 1.0 11/10/2020
+Final wire with power via VIN, step-down to ~7.5V. Re-calibrated virtual buttons as they were a bit off due to the new power source, I assume
  */
  
 #include <AceButton.h>
@@ -61,10 +64,10 @@ static AceButton* const BUTTONS[NUM_BUTTONS] = {
 // These values are read from SWC buttons, '06 Ford BA/BF
 static const uint8_t NUM_LEVELS = NUM_BUTTONS + 1;
 static const uint16_t LEVELS[NUM_LEVELS] = {
-  6 /* VOL- */,
-  275 /* VOL+ */,
-  560 /* SEEK */,
-  825 /* SOURCE */,
+  0 /* VOL- */,
+  211 /* VOL+ */,
+  430 /* SEEK */,
+  630 /* SOURCE */,
   1023 /* 100%, 10-bit ADC, open circuit */,
 };
 
@@ -89,7 +92,7 @@ void setup() {
 // level events and supress events
 //  ButtonConfig* buttonConfig = button.getButtonConfig();
   buttonConfig.setEventHandler(handleEvent);
-//  buttonConfig.setFeature(ButtonConfig::kFeatureClick);
+  buttonConfig.setFeature(ButtonConfig::kFeatureClick);
   buttonConfig.setFeature(ButtonConfig::kFeatureDoubleClick);
   buttonConfig.setFeature(ButtonConfig::kFeatureLongPress);
   buttonConfig.setFeature(ButtonConfig::kFeatureSuppressAfterClick);
