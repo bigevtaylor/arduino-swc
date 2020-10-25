@@ -28,6 +28,10 @@ Introduced dual digipot commands for tip & ring triggers, this enables BT phone 
 
 Version 1.0 11/10/2020
 Final wire with power via VIN, step-down to ~7.5V. Re-calibrated virtual buttons as they were a bit off due to the new power source, I assume
+
+Version 1.1 25/10/2020
+Optimised button timing
+
  */
  
 #include <AceButton.h>
@@ -65,7 +69,7 @@ static AceButton* const BUTTONS[NUM_BUTTONS] = {
 static const uint8_t NUM_LEVELS = NUM_BUTTONS + 1;
 static const uint16_t LEVELS[NUM_LEVELS] = {
   0 /* VOL- */,
-  211 /* VOL+ */,
+  200 /* VOL+ */,
   430 /* SEEK */,
   630 /* SOURCE */,
   1023 /* 100%, 10-bit ADC, open circuit */,
@@ -171,14 +175,14 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
 // A pressed event is the most response for volume control
   if ((swButton == 0) && (swPress == 0)) {
 //      Serial.println(" VOL DOWN"); // for debug
-      wrTip(55, 150); // 24kOhm
+      wrTip(55, 50); // 24kOhm
   }
 
 // Volume Up
 // A pressed event is the most responsive for volume control
   if ((swButton == 1) && (swPress == 0)) {
 //      Serial.println(" VOL UP");
-      wrTip(37, 150); // 16kOhm
+      wrTip(37, 50); // 16kOhm
   }
 
 /*
@@ -191,31 +195,31 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
 // Next Track
   if ((swButton == 2) && (swPress == 2)) {
 //      Serial.println(" Next Track");
-      wrTip(19, 150); // 8kOhm
+      wrTip(19, 50); // 8kOhm
   }
 
 // Previous Track
   if ((swButton == 2) && (swPress == 3)) {
 //      Serial.println(" Previous Track");
-      wrTip(28, 150); // 11,25kOhm
+      wrTip(28, 50); // 11,25kOhm
   }
 
 //  Source
   if ((swButton == 3) && (swPress == 2)) {
 //      Serial.println(" Source");
-      wrTip(2, 150); // 1.2kOhm
+      wrTip(2, 50); // 1.2kOhm
   } 
 
 //  Voice Control
   if ((swButton == 3) && (swPress == 4)) {
 //      Serial.println(" Voice Control");
-      wrRing(232, 1500); // 38-88kOhm hold
+      wrRing(232, 1250); // 38-88kOhm hold
     }
 
 //  Hang-up
   if ((swButton == 3) && (swPress == 3)) {
 //      Serial.println(" Hang-up");
-      wrRing(14, 150); // 5kOhm
+      wrRing(14, 50); // 5kOhm
     }
 
 }

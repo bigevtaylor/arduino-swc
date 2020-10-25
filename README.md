@@ -41,4 +41,10 @@ Cleaned up volume trigger, reset track -/+ trigger
 
 *Version 0.4 29/08/2020*  
 Introduced dual digipot commands for tip & ring triggers, this enables BT phone commands  
-  
+
+*Version 1.0 11/10/2020*
+Final wire with power via VIN, step-down to ~7.5V. Re-calibrated virtual buttons as they were a bit off due to the new power source, I assume
+
+*Version 1.1 25/20/2020*
+Optimised button timing
+
