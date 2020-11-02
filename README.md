@@ -30,6 +30,25 @@ Source | Source | Press
 Voice Control | Source | Long-press
 Hang-up | Source | Double-press
 
+*Digipot values to Pioneer functions (Pioneer MVH-S305BT)*
+
+Function | Resistance | Digipot Value | Time | Plug
+-------- | ---------- | ------------- | ---- | ----
+Volume Up | 16k | 33 - 46 | 50ms | Tip
+Volume Down | 24k | 47 - 72 | 50ms | Tip
+Track + / Seek + | 8,2k | 17 - 22 | 50ms | Tip
+Track - / Seek - | 11,25k | 23 -32 | 50ms | Tip
+Source | 1,2k | 1 - 5 | 50ms | Tip
+Power | 1,2k | 1 -5 | 1000ms | Ring
+Band | 62,75k | 88 - 212 | 50ms | Ring
+Display | 5,75 | 12 - 16 | 50ms | Tip
+Mute | 3,5 | 6 - 11 | 50ms | Tip
+Voice Control | 6,7k | 98 - 232 | 1000ms | Ring
+Hang-up | 5,5k | 14 | 50ms | Tip
+
+*Note, **Band** in some modes can result in Play / Pause and **Voice Control** is dependant on Pioneer model and mobile phone*
+
+
 *Version 0.1 08/08/2020*  
 Complete test in vehicle, all but previous track and power off functioning  
 
@@ -43,8 +62,11 @@ Cleaned up volume trigger, reset track -/+ trigger
 Introduced dual digipot commands for tip & ring triggers, this enables BT phone commands  
 
 *Version 1.0 11/10/2020*
-Final wire with power via VIN, step-down to ~7.5V. Re-calibrated virtual buttons as they were a bit off due to the new power source, I assume
+Final wire with power via VIN, step-down to ~ 7.5V. Re-calibrated virtual buttons as they were a bit off due to the new power source, I assume
 
 *Version 1.1 25/20/2020*
 Optimised button timing
+
+*Version 2.2 02/11/2020*
+Adjusted digipot value to reduce bleed into next function - seek & volume
 

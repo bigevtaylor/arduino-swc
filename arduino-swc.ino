@@ -32,6 +32,8 @@ Final wire with power via VIN, step-down to ~7.5V. Re-calibrated virtual buttons
 Version 1.1 25/10/2020
 Optimised button timing
 
+Version 1.2 02/11/2020
+Adjusted digipot value to reduce bleed into next function - seek & volume
  */
  
 #include <AceButton.h>
@@ -68,8 +70,8 @@ static AceButton* const BUTTONS[NUM_BUTTONS] = {
 // These values are read from SWC buttons, '06 Ford BA/BF
 static const uint8_t NUM_LEVELS = NUM_BUTTONS + 1;
 static const uint16_t LEVELS[NUM_LEVELS] = {
-  0 /* VOL- */,
-  200 /* VOL+ */,
+  6 /* VOL- */,
+  275 /* VOL+ */,
   430 /* SEEK */,
   630 /* SOURCE */,
   1023 /* 100%, 10-bit ADC, open circuit */,
@@ -162,14 +164,14 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
   uint8_t swButton = button->getPin();
   uint8_t swPress = (eventType);
 
-  /*
+ 
   // Print out a message for all analogue events for debug
   Serial.print(F("handleEvent(): "));
   Serial.print(F("virtualPin: "));
   Serial.print(swButton);
   Serial.print(F("; eventType: "));
   Serial.println(swPress);
-  */
+ 
 
 // Volume Down
 // A pressed event is the most response for volume control
@@ -182,7 +184,7 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
 // A pressed event is the most responsive for volume control
   if ((swButton == 1) && (swPress == 0)) {
 //      Serial.println(" VOL UP");
-      wrTip(37, 50); // 16kOhm
+      wrTip(42, 50); // 16kOhm
   }
 
 /*
@@ -201,7 +203,7 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
 // Previous Track
   if ((swButton == 2) && (swPress == 3)) {
 //      Serial.println(" Previous Track");
-      wrTip(28, 50); // 11,25kOhm
+      wrTip(27, 50); // 11,25kOhm
   }
 
 //  Source
