@@ -164,14 +164,14 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
   uint8_t swButton = button->getPin();
   uint8_t swPress = (eventType);
 
- 
+ /*
   // Print out a message for all analogue events for debug
   Serial.print(F("handleEvent(): "));
   Serial.print(F("virtualPin: "));
   Serial.print(swButton);
   Serial.print(F("; eventType: "));
   Serial.println(swPress);
- 
+ */
 
 // Volume Down
 // A pressed event is the most response for volume control
@@ -206,6 +206,12 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
       wrTip(27, 50); // 11,25kOhm
   }
 
+//  Play / Pause - must be in APP Mode on head unit
+  if ((swButton == 2) && (swPress == 4)) {
+//      Serial.println(" Voice Control");
+      wrTip(100, 50); // 62,75kOhm
+    }
+
 //  Source
   if ((swButton == 3) && (swPress == 2)) {
 //      Serial.println(" Source");
@@ -215,7 +221,7 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
 //  Voice Control
   if ((swButton == 3) && (swPress == 4)) {
 //      Serial.println(" Voice Control");
-      wrRing(232, 1250); // 38-88kOhm hold
+      wrRing(232, 1000); // 38-88kOhm hold
     }
 
 //  Hang-up

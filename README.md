@@ -26,9 +26,12 @@ Volume Down | VOL- | Press
 Volume Up | VOL+ | Press
 Next Track / Program | Seek | Press
 Previous Track / Program | Seek | Double-press
+Play / Pause* | Seek | Long-pres
 Source | Source | Press
-Voice Control | Source | Long-press
 Hang-up | Source | Double-press
+Voice Control | Source | Long-press
+
+* Play/Pause only operates in APP mode on the Pioneer
 
 *Digipot values to Pioneer functions (Pioneer MVH-S305BT)*
 
@@ -41,6 +44,7 @@ Track - / Seek - | 11,25k | 23 -32 | 50ms | Tip
 Source | 1,2k | 1 - 5 | 50ms | Tip
 Power | 1,2k | 1 -5 | 1000ms | Ring
 Band | 62,75k | 88 - 212 | 50ms | Ring
+Play / Pause | 62,75k | 88 - 212 | 50ms | Tip
 Display | 5,75 | 12 - 16 | 50ms | Tip
 Mute | 3,5 | 6 - 11 | 50ms | Tip
 Voice Control | 6,7k | 98 - 232 | 1000ms | Ring
