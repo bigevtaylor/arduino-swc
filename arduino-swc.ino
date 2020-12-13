@@ -34,10 +34,14 @@ Optimised button timing
 
 Version 1.2 02/11/2020
 Adjusted digipot value to reduce bleed into next function - seek & volume
- */
+
+Version 1.3 29/11/2020
+Included Longhold and Release for VOL +/- and minor changes with move to AceButton 1.8
+
+*/
  
-#include <AceButton.h>
 #include <SPI.h>
+#include <AceButton.h>
 using namespace ace_button;
 
 // Set the SWC input PIN
@@ -70,8 +74,8 @@ static AceButton* const BUTTONS[NUM_BUTTONS] = {
 // These values are read from SWC buttons, '06 Ford BA/BF
 static const uint8_t NUM_LEVELS = NUM_BUTTONS + 1;
 static const uint16_t LEVELS[NUM_LEVELS] = {
-  6 /* VOL- */,
-  275 /* VOL+ */,
+  0 /* VOL- */,
+  210 /* VOL+ */,
   430 /* SEEK */,
   630 /* SOURCE */,
   1023 /* 100%, 10-bit ADC, open circuit */,
@@ -87,23 +91,22 @@ void handleEvent(AceButton*, uint8_t, uint8_t);
 
 void setup() {
   delay(1000); // some microcontrollers reboot twice
-  Serial.begin(115200);
-  while (! Serial); // Wait until Serial is ready - Leonardo/Micro
+  Serial.begin(115200); 
+  while (!Serial); // Wait until Serial is ready - Leonardo/Micro
   Serial.println(F("setup(): begin"));
   
   // Don't use internal pull-up resistor
   pinMode(BUTTON_PIN, INPUT);
 
-// Configure the ButtonConfig with the event handler, enable all higher
-// level events and supress events
-//  ButtonConfig* buttonConfig = button.getButtonConfig();
+// Configure the ButtonConfig with the event handler.
   buttonConfig.setEventHandler(handleEvent);
   buttonConfig.setFeature(ButtonConfig::kFeatureClick);
-  buttonConfig.setFeature(ButtonConfig::kFeatureDoubleClick);
+  buttonConfig.setFeature(ButtonConfig::kFeatureDoubleClick);  
   buttonConfig.setFeature(ButtonConfig::kFeatureLongPress);
+  buttonConfig.setFeature(ButtonConfig::kFeatureRepeatPress);
   buttonConfig.setFeature(ButtonConfig::kFeatureSuppressAfterClick);
   buttonConfig.setFeature(ButtonConfig::kFeatureSuppressClickBeforeDoubleClick);
-//  buttonConfig.setFeature(ButtonConfig::kFeatureSuppressAfterLongPress);
+  buttonConfig.setFeature(ButtonConfig::kFeatureSuppressAfterLongPress);
 
 //  Ready digitpot, set wiper to no button
   pinMode(csPin, OUTPUT);
@@ -114,7 +117,7 @@ void setup() {
   SPI.transfer(wiperRing); // command
   SPI.transfer(255); // float the ring circuit
   digitalWrite(csPin, HIGH);
-  Serial.println(" Ready");
+//  Serial.println(F("setup(): ready"));
 }
 
 void loop() {
@@ -133,6 +136,22 @@ void wrTip(int digiValue, int delayMs) {
       SPI.transfer(digiValue);
 //      Serial.println(" Button Press"); // for debug
       delay(delayMs);
+      SPI.transfer(wiperTip);
+      SPI.transfer(ground);
+//      Serial.println(" Button Release"); // for debug
+      digitalWrite(csPin, HIGH);
+}
+
+void wrTipHold(int digiValue) {
+      digitalWrite(csPin, LOW);
+      SPI.transfer(wiperTip);
+      SPI.transfer(digiValue);
+//      Serial.println(" Hold"); // for debug
+      digitalWrite(csPin, HIGH);
+}
+
+void wrTipRelease() {
+      digitalWrite(csPin, LOW);
       SPI.transfer(wiperTip);
       SPI.transfer(ground);
 //      Serial.println(" Button Release"); // for debug
@@ -173,18 +192,46 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
   Serial.println(swPress);
  */
 
-// Volume Down
+// Volume Down, Single Click
 // A pressed event is the most response for volume control
   if ((swButton == 0) && (swPress == 0)) {
-//      Serial.println(" VOL DOWN"); // for debug
+//      Serial.println(" VOL DOWN Click"); // for debug
       wrTip(55, 50); // 24kOhm
   }
 
-// Volume Up
+// Volume Down, Hold
+// "I can't take no more of that God awful sound"
+  if ((swButton == 0) && (swPress == 4)) {
+//      Serial.println(" VOL DOWN Hold"); // for debug
+      wrTipHold(55); // 24kOhm
+  }
+
+// Volume Down, Release Hold
+// "So for God's sake turn it down"
+  if ((swButton == 0) && (swPress == 6)) {
+//      Serial.println(" VOL DOWN Release Hold"); // for debug
+      wrTipRelease();
+  }
+
+// Volume Up, Single Click
 // A pressed event is the most responsive for volume control
   if ((swButton == 1) && (swPress == 0)) {
 //      Serial.println(" VOL UP");
       wrTip(42, 50); // 16kOhm
+  }
+
+// Volume Up, Hold
+// “Being a teenager sucks, but that’s the point, surviving it is the whole point.”
+  if ((swButton == 1) && (swPress == 4)) {
+//      Serial.println(" VOL UP Hold");
+      wrTipHold(42); // 16kOhm
+  }
+
+// Volume Up, Release
+// "Quitting is not going to make you stronger, living will.”
+  if ((swButton == 1) && (swPress == 6)) {
+//      Serial.println(" VOL UP Release Hold");
+      wrTipRelease();
   }
 
 /*

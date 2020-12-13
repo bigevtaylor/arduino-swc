@@ -22,11 +22,11 @@ Current button configuration:
 
 Function | Button | Action
 -------- | ------ | -------
-Volume Down | VOL- | Press
-Volume Up | VOL+ | Press
+Volume Down | VOL- | Press & Hold
+Volume Up | VOL+ | Press & Hold
 Next Track / Program | Seek | Press
 Previous Track / Program | Seek | Double-press
-Play / Pause* | Seek | Long-pres
+Play / Pause* | Seek | Long-press
 Source | Source | Press
 Hang-up | Source | Double-press
 Voice Control | Source | Long-press
@@ -71,6 +71,10 @@ Final wire with power via VIN, step-down to ~ 7.5V. Re-calibrated virtual button
 *Version 1.1 25/20/2020*
 Optimised button timing
 
-*Version 2.2 02/11/2020*
+*Version 1.2 02/11/2020*
 Adjusted digipot value to reduce bleed into next function - seek & volume
+
+*Version 1.3 11/12/2020*
+Included Longhold and Release for VOL +/- and minor changes with move to AceButton 1.8
+
 
