@@ -4,8 +4,7 @@ Requires AceButton https://github.com/bxparks/AceButton
 
 **Ford BA / BF Steering Wheel Control Adapter for Pioneer Stereo**  
   
-This code currently only supports the functions that the wired remote tip triggers. Later versions will cover the ring either with a diode configuration  
-or a dual digitpot.  
+This code currently only supports the functions that the wired remote tip triggers.
 
 The bulk of this has been built off the knowledge found in the following articles and forum posts;  
 
