@@ -38,6 +38,9 @@ Adjusted digipot value to reduce bleed into next function - seek & volume
 Version 1.3 29/11/2020
 Included Longhold and Release for VOL +/- and minor changes with move to AceButton 1.8
 
+Version 1.4 1/11/2023
+Re-calibrated the ladder, disabled a couple of functions due to moving head unit to a Pioneer SPH-DA306DAB. Will re-learn functions soon.
+
 */
  
 #include <SPI.h>
@@ -71,14 +74,14 @@ static AceButton* const BUTTONS[NUM_BUTTONS] = {
 
 // Define the ADC voltage levels for each button.
 // For 4 buttons, we need 5 levels.
-// These values are read from SWC buttons, '06 Ford BA/BF
+// These values are read from SWC buttons, '08 Ford BF
 static const uint8_t NUM_LEVELS = NUM_BUTTONS + 1;
 static const uint16_t LEVELS[NUM_LEVELS] = {
   0 /* VOL- */,
-  210 /* VOL+ */,
-  430 /* SEEK */,
-  630 /* SOURCE */,
-  1023 /* 100%, 10-bit ADC, open circuit */,
+  295 /* VOL+ */,
+  462 /* SEEK */,
+  550 /* SOURCE */,
+  664 /* Open */,
 };
 
 // The LadderButtonConfig constructor binds the AceButton to the
@@ -117,7 +120,7 @@ void setup() {
   SPI.transfer(wiperRing); // command
   SPI.transfer(255); // float the ring circuit
   digitalWrite(csPin, HIGH);
-//  Serial.println(F("setup(): ready"));
+  Serial.println(F("setup(): ready"));
 }
 
 void loop() {
@@ -134,11 +137,11 @@ void wrTip(int digiValue, int delayMs) {
       digitalWrite(csPin, LOW);
       SPI.transfer(wiperTip);
       SPI.transfer(digiValue);
-//      Serial.println(" Button Press"); // for debug
+      //Serial.println(" Button Press"); // for debug
       delay(delayMs);
       SPI.transfer(wiperTip);
       SPI.transfer(ground);
-//      Serial.println(" Button Release"); // for debug
+      //Serial.println(" Button Release TIP"); // for debug
       digitalWrite(csPin, HIGH);
 }
 
@@ -146,7 +149,7 @@ void wrTipHold(int digiValue) {
       digitalWrite(csPin, LOW);
       SPI.transfer(wiperTip);
       SPI.transfer(digiValue);
-//      Serial.println(" Hold"); // for debug
+      //Serial.println(" Hold TIP"); // for debug
       digitalWrite(csPin, HIGH);
 }
 
@@ -154,7 +157,7 @@ void wrTipRelease() {
       digitalWrite(csPin, LOW);
       SPI.transfer(wiperTip);
       SPI.transfer(ground);
-//      Serial.println(" Button Release"); // for debug
+      //Serial.println(" Button Release TIP"); // for debug
       digitalWrite(csPin, HIGH);
 }
 
@@ -164,16 +167,16 @@ void wrRing(int digiValue, int delayMs) {
       digitalWrite(csPin, LOW);
       SPI.transfer(wiperRing);
       SPI.transfer(ground);
-//      Serial.println(" Select Ring, ground"); // for debug
+      //Serial.println(" Select Ring, ground"); // for debug
       SPI.transfer(wiperTip);
       SPI.transfer(digiValue);
-//      Serial.println(" Select Tip, button"); // for debug
+      //Serial.println(" Select Tip, button"); // for debug
       delay(delayMs);
       SPI.transfer(wiperTip);
       SPI.transfer(ground);
       SPI.transfer(wiperRing);
       SPI.transfer(255); // float
-//      Serial.println(" Button Release"); // for debug
+      //Serial.println(" Button Release Ring"); // for debug
       digitalWrite(csPin, HIGH);
 }
 
@@ -193,44 +196,39 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
  */
 
 // Volume Down, Single Click
-// A pressed event is the most response for volume control
   if ((swButton == 0) && (swPress == 0)) {
-//      Serial.println(" VOL DOWN Click"); // for debug
+      ///Serial.println(" VOL DOWN Click"); // for debug
       wrTip(55, 50); // 24kOhm
   }
 
 // Volume Down, Hold
-// "I can't take no more of that God awful sound"
   if ((swButton == 0) && (swPress == 4)) {
-//      Serial.println(" VOL DOWN Hold"); // for debug
+      //Serial.println(" VOL DOWN Hold"); // for debug
       wrTipHold(55); // 24kOhm
   }
 
 // Volume Down, Release Hold
-// "So for God's sake turn it down"
   if ((swButton == 0) && (swPress == 6)) {
-//      Serial.println(" VOL DOWN Release Hold"); // for debug
+      //Serial.println(" VOL DOWN Release Hold"); // for debug
       wrTipRelease();
   }
 
 // Volume Up, Single Click
 // A pressed event is the most responsive for volume control
   if ((swButton == 1) && (swPress == 0)) {
-//      Serial.println(" VOL UP");
+      //Serial.println(" VOL UP");
       wrTip(42, 50); // 16kOhm
   }
 
 // Volume Up, Hold
-// “Being a teenager sucks, but that’s the point, surviving it is the whole point.”
   if ((swButton == 1) && (swPress == 4)) {
-//      Serial.println(" VOL UP Hold");
+      //Serial.println(" VOL UP Hold");
       wrTipHold(42); // 16kOhm
   }
 
 // Volume Up, Release
-// "Quitting is not going to make you stronger, living will.”
   if ((swButton == 1) && (swPress == 6)) {
-//      Serial.println(" VOL UP Release Hold");
+      //Serial.println(" VOL UP Release Hold");
       wrTipRelease();
   }
 
@@ -243,38 +241,37 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t /* buttonState */
 
 // Next Track
   if ((swButton == 2) && (swPress == 2)) {
-//      Serial.println(" Next Track");
+      //Serial.println(" Next Track");
       wrTip(19, 50); // 8kOhm
   }
 
 // Previous Track
   if ((swButton == 2) && (swPress == 3)) {
-//      Serial.println(" Previous Track");
+      //Serial.println(" Previous Track");
       wrTip(27, 50); // 11,25kOhm
   }
 
-//  Play / Pause - must be in APP Mode on head unit
+//  Seek Series (DAB or Radio)
   if ((swButton == 2) && (swPress == 4)) {
-//      Serial.println(" Voice Control");
+      //Serial.println(" Voice Control");
       wrTip(100, 50); // 62,75kOhm
     }
 
 //  Source
   if ((swButton == 3) && (swPress == 2)) {
-//      Serial.println(" Source");
+      //Serial.println(" Source");
       wrTip(2, 50); // 1.2kOhm
   } 
 
 //  Voice Control
-  if ((swButton == 3) && (swPress == 4)) {
+//  if ((swButton == 3) && (swPress == 4)) {
 //      Serial.println(" Voice Control");
-      wrRing(232, 1000); // 38-88kOhm hold
-    }
+//      wrRing(232, 1000); // 38-88kOhm hold
+//    }
 
 //  Hang-up
   if ((swButton == 3) && (swPress == 3)) {
-//      Serial.println(" Hang-up");
+      Serial.println(" Hang-up");
       wrRing(14, 50); // 5kOhm
     }
-
 }
