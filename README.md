@@ -76,4 +76,5 @@ Adjusted digipot value to reduce bleed into next function - seek & volume
 *Version 1.3 11/12/2020*
 Included Longhold and Release for VOL +/- and minor changes with move to AceButton 1.8
 
-
+*Version 1.4 1/11/2023*
+Re-calibrated the ladder, disabled a couple of functions due to moving head unit to a Pioneer SPH-DA306DAB. Will re-learn functions soon.
