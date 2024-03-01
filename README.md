@@ -3,8 +3,6 @@ Car Audio Steering Wheel Control interface using Arduino.
 Requires AceButton https://github.com/bxparks/AceButton  
 
 **Ford BA / BF Steering Wheel Control Adapter for Pioneer Stereo**  
-  
-This code currently only supports the functions that the wired remote tip triggers.
 
 The bulk of this has been built off the knowledge found in the following articles and forum posts;  
 
