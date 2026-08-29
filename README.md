@@ -1,6 +1,6 @@
 Car Audio Steering Wheel Control interface using Arduino.  
 
-Requires AceButton https://github.com/bxparks/AceButton  
+Requires AceButton 1.10.1 or later https://github.com/bxparks/AceButton  
 
 **Ford BA / BF Steering Wheel Control Adapter for Pioneer Stereo**  
 
@@ -76,3 +76,6 @@ Included Longhold and Release for VOL +/- and minor changes with move to AceButt
 
 *Version 1.4 1/11/2023*
 Re-calibrated the ladder, disabled a couple of functions due to moving head unit to a Pioneer SPH-DA306DAB. Will re-learn functions soon.
+
+*Version 1.5 28/08/2026*
+Non-blocking digipot pulses - removed delay() from wrTip / wrRing so button debouncing is never stalled; a timed release is polled from loop() instead. Modernised for AceButton 1.10.1 (named event constants, nullptr ButtonConfig, dropped the unused RepeatPress feature, checkButtons() rate-limited to 5ms). Button-feel timing moved into setup() - VOL +/- and Seek engage on hold at 500ms instead of the 1000ms default. The wait for a USB serial host now times out after ~2s so the unit boots in the car with nothing attached. Needs re-testing in vehicle: the old calibration assumed loop() froze for 50ms on every button action.
